@@ -4,7 +4,8 @@ import Navbar from './Navbar.jsx';
 
 const config = {
 	getDocumentsEndpoint: 'http://localhost:3000/documents',
-	updateDocumentsEndpoint: 'http://localhost:3000/documents/update/'
+	updateDocumentsEndpoint: 'http://localhost:3000/documents/update/',
+	deleteDocumentsEndpoint: 'http://localhost:3000/documents/delete/'
 }
 
 class App extends Component {
@@ -77,14 +78,6 @@ class App extends Component {
 		});
 	}
 
-
-	handleDelete = (cardID) => {
-		const newCards = this.state.cards.filter(card => card.id !== cardID)
-		this.setState({
-			cards: newCards
-		})
-	}
-
 	handleResetAll = () => {
 		const newCards = this.state.cards.map( card => {
 			card.heading = '';
@@ -95,11 +88,24 @@ class App extends Component {
 	handleSubmit = (event, card) => {
 		console.log('---- handleSubmit running - App', card);
 		event.preventDefault();
-		this.postCardUpdateRequest( card );
+		this.putCardUpdateRequest( card );
 	}
 
-	postCardUpdateRequest( card ) {
-		console.log('---- postCardUpdateRequest card', card);
+	handleDelete = ( card ) => {
+		console.log('---- handleDelete running - App', card);
+
+		// Update state
+		const newCards = this.state.cards.filter(stateCard => stateCard.id !== card.id)
+		this.setState({
+			cards: newCards
+		})
+		
+		// Update API
+		this.deleteCardUpdateRequest( card );
+	}
+
+	putCardUpdateRequest( card ) {
+		console.log('---- putCardUpdateRequest card', card);
 
 		let data = JSON.stringify( {
 			title: card.title,
@@ -120,7 +126,23 @@ class App extends Component {
 		.catch(err => {
 			console.log('Error', err);
 		})
+	}
 
+	deleteCardUpdateRequest( card ) {
+		console.log('---- deleteCardUpdateRequest card', card);
+
+		fetch( `${config.deleteDocumentsEndpoint}${card._id}`, {
+			method: 'DELETE',
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+		.then(response => {
+			console.log('Response', response);
+		})
+		.catch(err => {
+			console.log('Error', err);
+		})
 	}
 }
 

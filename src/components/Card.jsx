@@ -37,7 +37,7 @@ class Card extends Component {
 					<input type="submit" value="Save" />
 				</form>
 				{ this.props.children }
-				<button onClick={() => this.props.onDelete(this.props.card.id)}>Delete</button>
+				<button onClick={() => this.props.onDelete(this.props.card)}>Delete</button>
 			</div>
 		);
 	}
