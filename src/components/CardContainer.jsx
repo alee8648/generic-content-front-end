@@ -4,7 +4,7 @@ import Card from './Card.jsx';
 
 class CardContainer extends Component {
 	render() {
-		const { onResetAll, cards, onDelete, onTextChange } = this.props;
+		const { onResetAll, cards, onDelete, onTextChange, onSubmit } = this.props;
 		return (
 			<div>
 				<button onClick={() =>onResetAll()}>Reset</button>
@@ -13,6 +13,7 @@ class CardContainer extends Component {
 					key={card.id}
 					onDelete={onDelete}
 					onTextChange={onTextChange}
+					onSubmit={onSubmit}
 					card={card}
 					>
 					<h4>Card #{card.id}</h4>

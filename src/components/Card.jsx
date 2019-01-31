@@ -16,14 +16,27 @@ class Card extends Component {
 		return _.get( this.props, 'card.content', '...' )
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		console.log('---- componentDidUpdate running - Card');
+		// Here we could make an AJAX call to update the server or get updated data
+
+		// Title has changed
+		if (prevProps.card.title !== this.props.card.title) {
+			// Update server
+		}
+	}
+
 	render() {
-		console.log(this.props);
+		console.log('---- render running - Card', this.props);
 		return (
 			<div>
 				<h1>{this.getTitle()}</h1>
 				<p>{this.getContent()}</p>
+				<form onSubmit={(e) => this.props.onSubmit(e, this.props.card)}>
+					<p><input type="text" placeholder="Add content" name="cardContent" value={this.getContent()} onChange={(e) => this.props.onTextChange(e, this.props.card)} /></p>
+					<input type="submit" value="Save" />
+				</form>
 				{ this.props.children }
-				<button onClick={() => this.props.onTextChange( this.props.card )}>Change the text</button>
 				<button onClick={() => this.props.onDelete(this.props.card.id)}>Delete</button>
 			</div>
 		);
