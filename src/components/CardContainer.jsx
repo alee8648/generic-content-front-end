@@ -4,10 +4,10 @@ import Card from './Card.jsx';
 
 class CardContainer extends Component {
 	render() {
-		const { onResetAll, cards, onDelete, onTextChange, onSubmit } = this.props;
+		const { onCreate, cards, onDelete, onTextChange, onSubmit } = this.props;
 		return (
 			<div>
-				<button onClick={() =>onResetAll()}>Reset</button>
+				<button onClick={() =>onCreate()}>New card</button>
 				{cards.map(card => 
 				<Card 
 					key={card.id}

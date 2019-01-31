@@ -5,7 +5,8 @@ import Navbar from './Navbar.jsx';
 const config = {
 	getDocumentsEndpoint: 'http://localhost:3000/documents',
 	updateDocumentsEndpoint: 'http://localhost:3000/documents/update/',
-	deleteDocumentsEndpoint: 'http://localhost:3000/documents/delete/'
+	deleteDocumentsEndpoint: 'http://localhost:3000/documents/delete/',
+	createDocumentsEndpoint: 'http://localhost:3000/documents/new'
 }
 
 class App extends Component {
@@ -55,7 +56,7 @@ class App extends Component {
 				/>
 				<CardContainer 
 					cards={this.state.cards}
-					onResetAll={this.handleResetAll}
+					onCreate={this.handleCreate}
 					onDelete={this.handleDelete}
 					onTextChange={this.handleTextChange}
 					onSubmit={this.handleSubmit}
@@ -78,10 +79,17 @@ class App extends Component {
 		});
 	}
 
-	handleResetAll = () => {
-		const newCards = this.state.cards.map( card => {
-			card.heading = '';
-			return card;
+	handleCreate = () => {
+		const newCards = _.cloneDeep( this.state.cards );
+		newCards.push( {
+			id: this.state.cards.length,
+			_id: '',
+			title: 'New card',
+			content: ''
+		})
+
+		this.setState({
+			cards: newCards
 		})
 	}
 
@@ -106,6 +114,11 @@ class App extends Component {
 
 	putCardUpdateRequest( card ) {
 		console.log('---- putCardUpdateRequest card', card);
+
+		// Card doesn't have an ID so must be new
+		if ( card._id === '' ) {
+			return this.createCardUpdateRequest( card );
+		}
 
 		let data = JSON.stringify( {
 			title: card.title,
@@ -133,6 +146,30 @@ class App extends Component {
 
 		fetch( `${config.deleteDocumentsEndpoint}${card._id}`, {
 			method: 'DELETE',
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+		.then(response => {
+			console.log('Response', response);
+		})
+		.catch(err => {
+			console.log('Error', err);
+		})
+	}
+
+	createCardUpdateRequest( card ) {
+		console.log('---- createCardUpdateRequest card', card);
+
+		let data = JSON.stringify( {
+			title: card.title,
+			content: card.content 
+		})
+		console.log('Content', data);
+
+		fetch( `${config.createDocumentsEndpoint}`, {
+			method: 'POST',
+			body: data,
 			headers: {
 				"Content-Type": "application/json"
 			}
